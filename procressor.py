@@ -254,7 +254,7 @@ def decode_midi(idx_array, file_path=None):
 
 
 if __name__ == '__main__':
-    encoded = encode_midi('dataset/K歌之王.mid')
+    encoded = encode_midi('dataset/爱情恰恰.mid')
     # encoded = encode_midi('midi_data_min/demo20.mid')
     print(encoded)
     decode_midi(encoded,file_path='out_put/output4.mid')
