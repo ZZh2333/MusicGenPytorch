@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "E:\\Anaconda\\acaconda\\envs\\MusicGenPytorch\\python.exe"
+    "python.pythonPath": "E:\\Anaconda\\acaconda\\envs\\MusicGenPytorch\\python.exe",
+    "git.ignoreLimitWarning": true
 }

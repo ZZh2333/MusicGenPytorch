@@ -1,6 +1,10 @@
 # User define
 MTD_dataset/
-MTD_min_data/
+EMOPIADataset/
+GAD_dataset/
+IMACDataset/
+MLPDataset/
+emotifymusicdataset/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
