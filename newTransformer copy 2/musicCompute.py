@@ -92,7 +92,7 @@ def getMusicData():
     # baseDir = os.path.dirname(os.path.abspath(__name__))
     # musicDataPath = str(baseDir+'/mainTransformerTest/output_MTD_min_data')
     # print(musicDataPath)
-    for filepath,dirnames,filenames in os.walk(r'E:\Anaconda\project\envs\MusicGenPytorch\output_MTD'):
+    for filepath,dirnames,filenames in os.walk(r'E:\Anaconda/project/envs/MusicGenPytorch/newTransformer copy 2/output_MTD_min_data'):
         print("开始处理音频数据")
         for filename in filenames:
             try:

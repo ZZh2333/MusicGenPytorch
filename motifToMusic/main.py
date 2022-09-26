@@ -18,7 +18,7 @@ def predict(x):
     # 初始化输出,这个是固定值
     # [1, 50]
     # [[0,2,2,2...]]
-    target = [131] + [130] * 65
+    target = [131] + [130] * 801
     target = torch.LongTensor(target).unsqueeze(0)
 
     # x编码,添加位置信息
@@ -30,7 +30,7 @@ def predict(x):
     x = model.encoder(x, mask_pad_x)
 
     # 遍历生成第1个词到第49个词
-    for i in range(65):
+    for i in range(801):
         # [1, 50]
         y = target
 
@@ -72,7 +72,7 @@ sched = torch.optim.lr_scheduler.StepLR(optim, step_size=3, gamma=0.5)
 # model = model.cuda()
 # loss_func = loss_func.cuda()
 
-for epoch in range(5): 
+for epoch in range(1): 
     for i, (x, y) in enumerate(loader):
         # x = [8, 50]
         # y = [8, 51]
@@ -117,4 +117,4 @@ for i in range(8):
     print(''.join([" "+ str(i) for i in y[i].tolist()]))
     print(''.join([" "+ str(i) for i in predict(x[i].unsqueeze(0))[0].tolist()]))
 
-torch.save(model,'.\motifModel.pth')
+torch.save(model,'.\fullMusicModel.pth')

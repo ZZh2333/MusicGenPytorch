@@ -72,7 +72,7 @@ sched = torch.optim.lr_scheduler.StepLR(optim, step_size=3, gamma=0.5)
 # model = model.cuda()
 # loss_func = loss_func.cuda()
 
-for epoch in range(5): 
+for epoch in range(1): 
     for i, (x, y) in enumerate(loader):
         # x = [8, 50]
         # y = [8, 51]
@@ -117,4 +117,4 @@ for i in range(8):
     print(''.join([" "+ str(i) for i in y[i].tolist()]))
     print(''.join([" "+ str(i) for i in predict(x[i].unsqueeze(0))[0].tolist()]))
 
-torch.save(model,'.\motifModel.pth')
+torch.save(model,'./newTransformer copy 2/newmodel.pth')

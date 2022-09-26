@@ -7,13 +7,13 @@ from musicCompute import getMusicData
 musicFeatures, musicData = getMusicData()
 
 def get_data():
-    max = len(musicData) - 1
-    i = random.randint(0,max)
+
+    i = random.randint(0,92)
     x = musicFeatures[i]
     y = [musicData[i][0]]+musicData[i]
     x = [131] + x + [132]
     y = [131] + y + [132]
-    x = x + [130] * (66 - len(x))
+    # x = x + [130] * (66 - len(x))
     y = y + [130] * (67 - len(y))
 
     # 转tensor

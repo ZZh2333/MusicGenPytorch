@@ -10,11 +10,12 @@ def get_data():
     max = len(musicData) - 1
     i = random.randint(0,max)
     x = musicFeatures[i]
+    # y = musicData[i]
     y = [musicData[i][0]]+musicData[i]
     x = [131] + x + [132]
     y = [131] + y + [132]
-    x = x + [130] * (66 - len(x))
-    y = y + [130] * (67 - len(y))
+    x = x + [130] * (802 - len(x))
+    y = y + [130] * (803 - len(y))
 
     # 转tensor
     x = torch.LongTensor(x)

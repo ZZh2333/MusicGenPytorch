@@ -3,6 +3,9 @@ import random
 import numpy as np
 import torch
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+
 from musicCompute import getMusicData
 musicFeatures, musicData = getMusicData()
 
@@ -10,11 +13,13 @@ def get_data():
     max = len(musicData) - 1
     i = random.randint(0,max)
     x = musicFeatures[i]
+    x = x * int(800 / len(x))
+    # y = musicData[i]
     y = [musicData[i][0]]+musicData[i]
     x = [131] + x + [132]
     y = [131] + y + [132]
-    x = x + [130] * (66 - len(x))
-    y = y + [130] * (67 - len(y))
+    x = x + [130] * (802 - len(x))
+    y = y + [130] * (803 - len(y))
 
     # 转tensor
     x = torch.LongTensor(x)
@@ -22,7 +27,7 @@ def get_data():
     # print(len(x))
     # print(len(y))
 
-    return x, y
+    return x.to(device), y.to(device)
 
 
 # 两数相加测试,使用这份数据请把main.py中的训练次数改为10

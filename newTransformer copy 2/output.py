@@ -101,11 +101,11 @@ def numpy_to_midi(sample_roll, output='output.mid'):
 
 
 
-model = torch.load('.\motifModel.pth')
+model = torch.load('.\model.pth')
 
 # [firstmidi,lenmidi,high_lowmidi,midiFrequence,midmidi]
 
-x = [131] + [69,38,59,26,103] + [132] + [130] * 59
+x = [131,69,38,20,45,72,132]+[130] * 59
 # print(x)
 x = torch.LongTensor(x)
 
@@ -120,7 +120,6 @@ for i,mus in enumerate(y.split(" ")):
         break
     if(mus != str(131) and mus != ""):
         midi_batch.append(mus)
-midi_batch = midi_batch[1:]
 print(midi_batch)
 
 midi_array = []
@@ -130,4 +129,4 @@ for i in midi_batch:
     midi_array.append(z)
 
 # print(torch.LongTensor(midi_array))
-numpy_to_midi(torch.LongTensor(midi_array),'./MTD0760.mid')
+numpy_to_midi(torch.LongTensor(midi_array))

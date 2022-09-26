@@ -3,6 +3,9 @@ import numpy as np
 import pretty_midi
 from mask import mask_pad, mask_tril
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+
 # from main import predict
 
 # 预测函数
@@ -16,7 +19,7 @@ def predict(x):
     # 初始化输出,这个是固定值
     # [1, 50]
     # [[0,2,2,2...]]
-    target = [131] + [130] * 65
+    target = [131] + [130] * 801
     target = torch.LongTensor(target).unsqueeze(0)
 
     # x编码,添加位置信息
@@ -28,7 +31,7 @@ def predict(x):
     x = model.encoder(x, mask_pad_x)
 
     # 遍历生成第1个词到第49个词
-    for i in range(65):
+    for i in range(801):
         # [1, 50]
         y = target
 
@@ -96,16 +99,62 @@ def numpy_to_midi(sample_roll, output='output.mid'):
     music.instruments.append(piano)
     music.write(output)
 
+def melody_to_numpy(fpath, unit_time=0.125):
+    # 首先取出midi中的音乐信息，将第一个音轨提出来，然后取所有音符元素。
+    music = pretty_midi.PrettyMIDI(fpath)
+    notes = music.instruments[0].notes
+
+    # 纪录一个时间戳 t和保存向量的列表 roll。
+    t = 0.
+    roll = list()
+    # print(notes[0], notes[-1])
+
+    # 在 Notes里遍历，找出所有音符的音高和长度，同时不放过休止符。
+    for note in notes:
+        # print(t, note)
+
+        # 两个相邻的音符不是无缝连接，说明休止符存在。计算其相对于最小分辨率 unit_time的相对时长 T，建立一个(T, 130)的矩阵，将第129维置1.
+        elapsed_time = note.start - t
+        if elapsed_time > 0.:
+            steps = torch.zeros((int(round(elapsed_time / unit_time)), 130))
+            steps[range(int(round(elapsed_time / unit_time))), 129] += 1.
+            roll.append(steps)
+
+        # 如果是无缝连接，那么检查当前音符：
+        n_units = int(round((note.end - note.start) / unit_time))
+        steps = torch.zeros((n_units, 130))
+        steps[0, note.pitch] += 1
+        steps[range(1, n_units), 128] += 1
+
+        # 其中除第一列记录pitch外，其他列都记录sustain的128.最后合成为一个矩阵：
+        roll.append(steps)
+        t = note.end
+    return torch.cat(roll, 0)
 
 
+def array_to_single(array):
+    midi_batch = []
+    for i in array:
+        num = 0
+        for j in i:
+            if j == 1:
+                midi_batch.append(num)
+                num = 0
+                break
+            num += 1
+    return midi_batch
 
 
+music_path = '.\MTD0760.mid'
+music_batch = melody_to_numpy(music_path)
+music_array = array_to_single(music_batch)
 
-model = torch.load('.\motifModel.pth')
+
+model = torch.load('.\motifToMusic.pth')
 
 # [firstmidi,lenmidi,high_lowmidi,midiFrequence,midmidi]
 
-x = [131] + [69,38,59,26,103] + [132] + [130] * 59
+x = [131] + music_array + [132] + [130] * (800 - len(music_array))
 # print(x)
 x = torch.LongTensor(x)
 
@@ -120,7 +169,6 @@ for i,mus in enumerate(y.split(" ")):
         break
     if(mus != str(131) and mus != ""):
         midi_batch.append(mus)
-midi_batch = midi_batch[1:]
 print(midi_batch)
 
 midi_array = []
@@ -130,4 +178,4 @@ for i in midi_batch:
     midi_array.append(z)
 
 # print(torch.LongTensor(midi_array))
-numpy_to_midi(torch.LongTensor(midi_array),'./MTD0760.mid')
+numpy_to_midi(torch.LongTensor(midi_array),'./Music.mid')

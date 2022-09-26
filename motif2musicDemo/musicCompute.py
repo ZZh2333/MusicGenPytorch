@@ -92,27 +92,26 @@ def getMusicData():
     # baseDir = os.path.dirname(os.path.abspath(__name__))
     # musicDataPath = str(baseDir+'/mainTransformerTest/output_MTD_min_data')
     # print(musicDataPath)
-    for filepath,dirnames,filenames in os.walk(r'E:\Anaconda\project\envs\MusicGenPytorch\output_MTD'):
-        print("开始处理音频数据")
+    for filepath,dirnames,filenames in os.walk(r'E:/Anaconda/project/envs/MusicGenPytorch/motif2MusicDemo/output_melody'):
+        print("开始处理音频数据\n")
         for filename in filenames:
+            # print(filename)
             try:
                 # print(os.path.join(filepath,filename))
                 musicpath = os.path.join(filepath,filename)
                 midiarray = melody_to_numpy(musicpath)
                 midi_batch = array_to_single(midiarray)
                 # print(midi_batch[0])
-                if(len(midi_batch)<=64):
-                    firstmidi = midi_batch[0]
-                    lenmidi = len(midi_batch)
-                    high_lowmidi = computeHighLow(midi_batch)
-                    midiFrequence = computeFrequence(midi_batch)
-                    midmidi = computeMidMidi(midi_batch)
-                    # midi_batch += [padding] * (64 - len(midi_batch))
+                l = len(midi_batch)
+                # print(l)
+                if(l>=128 and l<=800):
                     musicData.append(midi_batch)
-                    musicFeatures.append([firstmidi,lenmidi,high_lowmidi,midiFrequence,midmidi])
+                    musicFeatures.append(midi_batch[0:63])
             except Exception as e:
                 # print(e)
                 continue
     print("包含"+str(len(musicData))+"条音频数据")
     # print("cnt:"+str(cnt))
     return musicFeatures, musicData
+
+# getMusicData()
